@@ -124,21 +124,40 @@ Example queries that trigger tool calls:
 
 ## MLflow Integration (Optional)
 
-The project includes MLflow tracing support for observability. To use it:
+The project includes MLflow tracing support for observability. **Important: This project requires MLflow version 3.6.0.**
 
-1. **Start MLflow tracking server**:
+### Starting the MLflow Server
+
+1. **Ensure MLflow 3.6.0 is installed**:
    ```bash
-   mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5001
+   pip install mlflow==3.6.0 mlflow-tracing==3.6.0
    ```
 
-2. **Configure MLflow in `app.py`** (currently commented out):
+2. **Start MLflow tracking server**:
+   ```bash
+   mlflow ui --port 5001
+   ```
+   
+   The server will be available at `http://localhost:5001`
+
+3. **Verify MLflow version** (optional):
+   ```bash
+   mlflow --version
+   ```
+   Should output: `mlflow, version 3.6.0`
+
+### Configuring MLflow in the Application
+
+The MLflow configuration is already set up in `app.py`:
    ```python
    import mlflow
    mlflow.set_tracking_uri("http://localhost:5001")
-   mlflow.set_experiment("chat")
+   mlflow.openai.autolog()
    ```
 
-3. **View traces** at `http://localhost:5001`
+### Viewing Traces
+
+Once the MLflow server is running and the application is using it, you can view traces at `http://localhost:5001`
 
 ## Development
 

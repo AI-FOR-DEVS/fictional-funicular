@@ -5,6 +5,9 @@ import mlflow
 
 client = OpenAI()
 
+mlflow.set_tracking_uri("http://localhost:5001")
+mlflow.openai.autolog()
+
 def chat(query: str, history: list):
   history.append({"role": "user", "content": query})
 
