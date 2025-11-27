@@ -1,6 +1,7 @@
 from openai import OpenAI
 import search_tools
 import json
+import mlflow
 
 client = OpenAI()
 
@@ -43,6 +44,7 @@ def chat(query: str, history: list):
       
       if tool_name == "search_duckduckgo":
         results = search_tools.search_duckduckgo(**tool_args)  # Unpack arguments
+        print("------> RESULTS: ", results)
         # Convert results to string if needed
         if not isinstance(results, str):
           results = json.dumps(results)
