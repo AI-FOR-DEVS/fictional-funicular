@@ -1,3 +1,6 @@
+import requests
+from ddgs import DDGS
+
 tools = [
     {
         "type": "function",
@@ -20,5 +23,11 @@ tools = [
 
 def search_duckduckgo(query):
     """Search DuckDuckGo and return the top results as a list of dicts with title, url, and snippet."""
-    results = ["The weather in Tokyo is sunny."]
-    return results
+
+    results = DDGS().text(query, max_results=5)
+
+    return str(results)
+
+if __name__ == "__main__":
+    results = search_duckduckgo("What is the weather in Tokyo?")
+    print(results)
