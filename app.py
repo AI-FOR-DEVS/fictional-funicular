@@ -5,10 +5,19 @@ import mlflow
 
 client = OpenAI()
 
-mlflow.set_tracking_uri("http://localhost:5001")
+mlflow.set_tracking_uri("databricks")
+mlflow.set_experiment("/Users/sebastian@ai-for-devs.com/llmops")
 mlflow.openai.autolog()
 
-def chat(query: str, history: list):
+@mlflow.trace
+def chat(query: str, history: list, session_id: str):
+
+  mlflow.update_current_trace(
+      metadata={
+          "mlflow.trace.session": session_id,
+      }
+  )
+
   history.append({"role": "user", "content": query})
 
   response = client.chat.completions.create(

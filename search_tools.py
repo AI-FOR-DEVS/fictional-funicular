@@ -1,5 +1,6 @@
 import requests
 from ddgs import DDGS
+import mlflow
 
 tools = [
     {
@@ -21,12 +22,29 @@ tools = [
     },
 ]
 
+@mlflow.trace(span_type="RETRIEVER")
 def search_duckduckgo(query):
-    """Search DuckDuckGo and return the top results as a list of dicts with title, url, and snippet."""
-
+    """Search DuckDuckGo and return the top results as a list of dicts with content key.
+    This format is required for RetrievalGroundedness evaluation in Databricks."""
+    
     results = DDGS().text(query, max_results=5)
-
-    return str(results)
+    
+    # Format results as list of dicts with "content" key for RetrievalGroundedness
+    formatted_results = []
+    for item in results:
+        # Extract content from the result
+        content = item.get("body", "") or item.get("snippet", "") or str(item)
+        doc = {
+            "content": content
+        }
+        # Preserve metadata
+        if "title" in item:
+            doc["title"] = item["title"]
+        if "href" in item:
+            doc["url"] = item["href"]
+        formatted_results.append(doc)
+    
+    return formatted_results
 
 if __name__ == "__main__":
     results = search_duckduckgo("What is the weather in Tokyo?")

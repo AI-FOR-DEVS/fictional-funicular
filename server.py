@@ -27,7 +27,7 @@ def read_root(request: Request):
 @app.post("/chat")
 def server_chat(query: str = Form(...), session_id: str = Form(None)):
     session_id, history = get_or_create_session(session_id)
-    response_text = chat(query, history)
+    response_text = chat(query, history, session_id)
     
     # Return both the response and session_id so client can store it
     return JSONResponse({
